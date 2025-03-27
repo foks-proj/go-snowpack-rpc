@@ -2,10 +2,7 @@ package rpc
 
 import (
 	"context"
-	"encoding/binary"
-	"errors"
 	"fmt"
-	"io"
 	"sync"
 )
 
@@ -246,23 +243,6 @@ func (h *protocolHandlerV2) getArg(meth MethodV2) (interface{}, error) {
 		return nil, err
 	}
 	return handler.MakeArg(), nil
-}
-
-type ProtocolUniqueID uint64
-type TypeUniqueID uint64
-type Position uint64
-
-func (t TypeUniqueID) EncodeToBytes(b []byte) {
-	binary.BigEndian.PutUint64(b, uint64(t))
-}
-func (t TypeUniqueID) Encode(w io.Writer) error {
-	var b [8]byte
-	t.EncodeToBytes(b[:])
-	n, err := w.Write(b[:])
-	if n != 8 {
-		return errors.New("short buffer write")
-	}
-	return err
 }
 
 type MethodV1 struct {
